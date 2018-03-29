@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import { List, Divider, Container, Header, Image } from 'semantic-ui-react'
 import axios from 'axios'
 
 class SingleArtistView extends Component {
@@ -23,9 +24,22 @@ class SingleArtistView extends Component {
 
   render () {
     return (
-      <div>
-        
-      </div>
+      <Container>
+        <Image src={this.state.artist.photo_url}/>
+        <Header>{this.state.artist.name}</Header>
+        <h4>Nationality: {this.state.artist.nationality}</h4>
+        <Divider />
+        <List>
+          {this.state.songs.map(song => {
+            return (
+              <List.Item key={song.id}>
+                {song.title}
+                <audio controls src={song.preview_url}></audio>
+              </List.Item>
+            )
+          })}
+        </List>
+      </Container>
     )
   }
 }
