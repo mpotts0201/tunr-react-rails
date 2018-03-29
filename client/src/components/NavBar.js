@@ -17,9 +17,10 @@ const NavBar = () => {
       <h1>Tunr</h1>
       <div>
         <div><Link to="/">All Artists</Link></div>
+        <div><Link to="/artist/3">Test Single Artist</Link></div>
       </div>
     </NavStyle>
   )
-};
+}
 
 export default NavBar
