@@ -21,7 +21,8 @@ class ArtistListView extends Component {
       name: '',
       nationality: '',
       photo_url: ''
-    }
+    },
+    error: ''
   }
 
   componentDidMount () {
@@ -32,8 +33,14 @@ class ArtistListView extends Component {
   }
 
   getAllArtists = async () => {
-    const response = await axios.get('/api/artists')
-    this.setState({ artists: response.data.artists })
+    try {
+      const response = await axios.get('/api/artists')
+      this.setState({ artists: response.data.artists })
+    } catch (err) {
+      console.log(err)
+      this.setState({err: err.message})
+    }
+
   }
 
   toggleNewArtistForm = () => {
@@ -50,7 +57,7 @@ class ArtistListView extends Component {
 
   createNewArtist = async (e) => {
     e.preventDefault()
-    const response = await axios.post('/api/artists', this.state.newArtist)
+    await axios.post('/api/artists', this.state.newArtist)
     this.getAllArtists()
   }
 
@@ -77,6 +84,7 @@ class ArtistListView extends Component {
             )
           })}
         </FlexCards>
+        {this.state.err}
       </Container>
     )
   }
