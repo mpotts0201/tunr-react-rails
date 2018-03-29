@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { List, Divider, Container, Header, Image } from 'semantic-ui-react'
+import { List, Divider, Button, Container, Header, Image } from 'semantic-ui-react'
 import axios from 'axios'
 
 class SingleArtistView extends Component {
@@ -22,12 +22,19 @@ class SingleArtistView extends Component {
     })
   }
 
+  deleteArtist = async () => {
+    const artistId = this.props.match.params.id
+    await axios.delete(`/api/artists/${artistId}`)
+    this.props.history.push('/')
+  }
+
   render () {
     return (
       <Container>
         <Image src={this.state.artist.photo_url}/>
         <Header>{this.state.artist.name}</Header>
         <h4>Nationality: {this.state.artist.nationality}</h4>
+        <Button negative onClick={this.deleteArtist}>Delete {this.state.artist.name}</Button>
         <Divider />
         <List>
           {this.state.songs.map(song => {

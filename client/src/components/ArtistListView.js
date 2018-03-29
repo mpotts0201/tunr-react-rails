@@ -38,7 +38,7 @@ class ArtistListView extends Component {
       this.setState({ artists: response.data.artists })
     } catch (err) {
       console.log(err)
-      this.setState({err: err.message})
+      this.setState({ err: err.message })
     }
 
   }
@@ -57,8 +57,16 @@ class ArtistListView extends Component {
 
   createNewArtist = async (e) => {
     e.preventDefault()
-    await axios.post('/api/artists', this.state.newArtist)
-    this.getAllArtists()
+    const response = await axios.post('/api/artists', this.state.newArtist)
+    const artists = [ ...this.state.artists, response.data ]
+    this.setState({
+      artists,
+      newArtist: {
+        name: '',
+        nationality: '',
+        photo_url: ''
+      }
+    })
   }
 
   render () {
