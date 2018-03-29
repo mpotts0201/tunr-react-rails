@@ -6,9 +6,9 @@ import styled from 'styled-components'
 
 const FlexCards = styled.div`
   display: flex;
-  flex-wrap: wrap;
+  flex-flow: row wrap;
   justify-content: space-around;
-  align-items: baseline;
+  align-items: flex-start;
   align-content: flex-start;
 `
 

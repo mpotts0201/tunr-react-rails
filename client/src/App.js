@@ -12,7 +12,7 @@ class App extends Component {
           <NavBar />
           <Switch>
             <Route exact path="/" component={ArtistListView} />
-            <Route path="/artist/:id" component={SingleArtistView} />
+            <Route path="/artists/:id" component={SingleArtistView} />
           </Switch>
         </div>
       </Router>
