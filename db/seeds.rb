@@ -5,7 +5,6 @@
 #
 #   movies = Movie.create([{ name: 'Star Wars' }, { name: 'Lord of the Rings' }])
 #   Character.create(name: 'Luke', movie: movies.first)
-
 require_relative './song_data.rb'
 require_relative './artist_data.rb'
 
@@ -32,4 +31,3 @@ song_data.each_pair do |artist_name, songs|
     })
   end
 end
-

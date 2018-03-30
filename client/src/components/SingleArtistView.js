@@ -1,56 +1,102 @@
 import React, { Component } from 'react';
-import axios from 'axios'
-import styled from 'styled-components'
-
-const Img = styled.img`
-width: 300px;
-`
-
+import axios from 'axios';
+import { Card, Image, Grid, List, Divider, Button } from 'semantic-ui-react';
+import { Link } from 'react-router-dom';
+import EditArtistForm from './EditArtistForm';
 
 class SingleArtistView extends Component {
+  state = {
+    artist: {},
+    songs: [],
+    showEditArtist: false
+  };
 
-    state = {
-        artist: {},
-        songs: []
-    }
+  componentDidMount () {
+    this.getSingleArtist()
+  }
 
-    componentDidMount(){
+  getSingleArtist = async () => {
+    const artistId = this.props.match.params.id
+    const res = await axios.get(`/api/artists/${artistId}`)
+    this.setState({
+      artist: res.data.artist,
+      songs: res.data.songs
+    })
+    console.log(res.data)
+  };
 
-        this.getSingleArtist()
-    }
+  deleteArtist = async () => {
+    const artistId = this.props.match.params.id
+    await axios.delete(`/api/artists/${artistId}`)
+    console.log(this.props.match.params.id)
+    this.props.history.push('/')
+  };
 
-    getSingleArtist = async() => {
-        const artistId = this.props.match.params.id
-        const res = await axios.get(`/api/artists/${artistId}`)
-        this.setState({ 
-            artist: res.data.artist,
-            songs: res.data.songs
-        })
-        console.log(res.data)
-    }
+  toggleShowEdit = () => {
+    this.setState({ showEditArtist: !this.state.showEditArtist })
+  };
 
+  handleSubmit = async e => {
+    e.preventDefault()
+    const artistId = this.state.artist.id
+    const artistUpdate = { ...this.state.artist }
+    await axios.patch(`/api/artists/${artistId}`, artistUpdate)
+    this.toggleShowEdit()
+    await this.getSingleArtist()
+  };
 
+  handleChange = e => {
+    const artist = e.target.name
+    const newArtist = { ...this.state.artist }
+    newArtist[ artist ] = e.target.value
+    this.setState({ artist: newArtist })
+  };
 
+  render () {
+    return (
+      <Grid centered>
+        <Divider />
+        {this.state.showEditArtist ? (
+          <EditArtistForm
+            handleChange={this.handleChange}
+            handleSubmit={this.handleSubmit}
+            artist={this.state.artist}
+          />
+        ) : (
+          <Card raised>
+            <Link to={`/artists/${this.state.artist.id}`}>
+              <Image centered fluid>
+                <img src={this.state.artist.photo_url} alt="" />
+              </Image>
+            </Link>
+            <Card.Header>{this.state.artist.name}</Card.Header>
+            <Card.Content>
+              <h4>{this.state.artist.nationality}</h4>
+              <Button negative onClick={this.deleteArtist}>
+              Delete {this.state.artist.name}
+              </Button>
+              <Button primary onClick={this.toggleShowEdit}>
+              Edit Artist
+              </Button>
+            </Card.Content>
+          </Card>
+        )}
 
-    render() {
-        return (
-            <div>
-                <Img src={this.state.artist.photo_url}  alt={`${this.state.artist.name}'s Photo`}/>
-                <h1>{this.state.artist.name}</h1>
-                <h3>{this.state.artist.nationality}</h3>
-                {this.state.songs.map((song,i) => {
-                    return (
-                        <div key={i}>
-                            <h4>{song.title}</h4>
-                            <audio controls >
-                                <source src={song.preview_url} type="audio/mp4"/>
-                            </audio>
-                        </div>
-                    )
-                })}
-            </div>
-        );
-    }
+        <Divider />
+
+        <List>
+          {this.state.songs.map(song => {
+            return (
+              <List.Item key={song.id}>
+                {song.title}
+                <audio controls src={song.preview_url} />
+              </List.Item>
+            )
+          })}
+        </List>
+      </Grid>
+    )
+  }
 }
 
-export default SingleArtistView;
+export default SingleArtistView
